@@ -48,11 +48,8 @@ long measureDistance(int trigPin, int echoPin) {
 void sendJsonData(int statusArray[]) {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
-
-    // Specify the URL
+    http.setReuse(true); // Aktifkan keep-alive
     http.begin(url);
-    
-    // Specify content-type header
     http.addHeader("Content-Type", "application/json");
 
     // Construct JSON string manually
