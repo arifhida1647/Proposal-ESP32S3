@@ -2,8 +2,8 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const int TRIG_PINS[] = {1, 42, 40, 38, 36, 45, 47, 20, 4, 5, 15, 17, 8, 46, 10, 11, 13};
-const int ECHO_PINS[] = {2, 41, 39, 37, 35, 0, 48, 21, 19, 6, 7, 16, 18, 3, 9, 12, 14};
+const int TRIG_PINS[] = {1, 42, 40, 38, 36, 45, 47, 20, 4, 6, 15, 17, 8, 46, 10, 11, 13};
+const int ECHO_PINS[] = {2, 41, 39, 37, 35, 0, 48, 21, 19, 5, 7, 16, 18, 3, 9, 12, 14};
 
 const int NUM_SENSORS = sizeof(TRIG_PINS) / sizeof(TRIG_PINS[0]);
 
@@ -88,9 +88,18 @@ void loop() {
   int statusArray[NUM_SENSORS];
 
   // Read and store data for each sensor
-  for (int i = 0; i < NUM_SENSORS; i++) {
+  for (int i = 0; i < NUM_SENSORS; i++)
+  {
     long distance = measureDistance(TRIG_PINS[i], ECHO_PINS[i]);
-    statusArray[i] = (distance < 5) ? 1 : 0; // Store status: 0 if < 5, else 1
+
+    if (distance == 0 || distance > 400)
+    {
+      statusArray[i] = 2; // Sensor tidak terhubung
+    }
+    else
+    {
+      statusArray[i] = (distance < 5) ? 1 : 0; // 1 jika < 5cm, 0 jika >= 5cm
+    }
   }
 
   // Print the JSON-like structure to Serial
